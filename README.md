@@ -177,6 +177,7 @@ http-роутер:
 Логи отправляются
 ![screen](/img/Kib3.png)
 ![screen](/img/Kib4.png)
+![screen](/img/Kib5.png)
 
 ✅ Elasticsearch, Kibana, Filebeat функционируют. Логи отправляются. Доступ предоставлен. 
 
