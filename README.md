@@ -134,7 +134,7 @@ http-роутер:
 ![screen](/img/zsplay.png)
 
 Установка Elasticsearsh на vm-elastic
-![screen](/img/elasticpb.png)
+![screen](/img/elsticpb.png)
 
 Установка Kibana на vm-kibana
 ![screen](/img/kibanapb.png)
