@@ -160,6 +160,7 @@ http-роутер:
 Настроенный Dashboard
 ![screen](/img/Zabbix6.png)
 ![screen](/img/Zabbix5.png)
+![screen](/img/Zabbix7.png)
 
 Доступ к Zabbix:
 Логин: Admin
