@@ -64,4 +64,137 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 # Выполнение работы
 
-###
+## Развертывание инфраструктуры
+Устанавливаю terraform и ansible: 
+![screen](/img/1.png)
+
+Создаю необходимую конфигурацию terraform и плейбуки для ansible. 
+Начинаю деплой инфраструктуры. 
+![screen](/img/2.png)
+
+Инфраструктура развернута в соответствии с требованиями дипломного проекта: 
+![screen](/img/3.png)
+Диски:
+![screen](/img/4.png)
+Расписание снимков:
+![screen](/img/5.png)
+target group:
+![screen](/img/target-group.png)
+backend group:
+![screen](/img/backend-group.png)
+http-роутер:
+![screen](/img/http-router.png)
+Балансировщик:
+![screen](/img/ballancer.png)
+Облачные сети:
+![screen](/img/cloud-net.png)
+Шлюзы:
+![screen](/img/gateway-net.png)
+Таблицы маршрутизации:
+![screen](/img/route-table.png)
+Группы безопасности:
+![screen](/img/sec-group.png)
+Дашборд каталога:
+![screen](/img/dashboard1.png)
+
+    Нет внешних IP у приватных ВМ ✅  
+    NAT для исходящего трафика ✅  
+    ALB с health check ✅  
+    Снапшоты настроены ✅  
+    Безопасность: ключи, SG, bastion ✅  
+    PostgreSQL готов к использованию Zabbix ✅
+
+✅ Все ресурсы созданные через terraform готовы и развернуты.
+
+
+## Подготвка и установка Ansible-playbooks для конфигурирования необходимых сервисов:
+
+Проверяю плейбуки и версию Ansible на vm-bastion. Установка будет осуществлятся с vm-bastion.
+![screen](/img/ansver.png)
+
+Проверяю доступность других машин для установки плейбуков 
+![screen](/img/ansping.png)
+
+Установка осуществляется в следующем порядке: 
+1. Веб-серверы: Nginx (основа для сайта и логов)
+2. Zabbix Server: мониторинговая система
+3. Elasticsearch: приёмник логов
+4. Kibana: визуализация (требует Elasticsearch)
+5. Zabbix Agent: отправка метрик на уже работающий сервер
+6. Filebeat: отправка логов в уже работающий Elasticsearch
+
+Установка site-nginx на vm-web1, vm-web2
+![screen](/img/nginx.png)
+Тестирование сайта curl -v <публичный IP балансера>:80
+![screen](/img/curl.png)
+Доступ в браузере через адрес балансировщика: http://158.160.204.254/
+![screen](/img/site.png)
+
+Установка Zabbix-server на vm-zabbix
+![screen](/img/zsplay.png)
+
+Установка Elasticsearsh на vm-elastic
+![screen](/img/elasticpb.png)
+
+Установка Kibana на vm-kibana
+![screen](/img/kibanapb.png)
+
+Установка Zabbix Agent на все созданные vm
+![screen](/img/zagetpb.png)
+
+Установка Filebeat на на vm-web1, vm-web2
+![screen](/img/fbpb.png)
+
+✅ Все необходимые сервисы установлены 
+
+## Мониторинг, настройка Zabbix
+
+Проверка работы Zabbix. Перехожу на страницу Zabbix с http://130.193.36.133/zabbix
+Логин Admin
+Пароль zabbix
+![screen](/img/Zabbix1.png)
+![screen](/img/Zabbix2.png)
+![screen](/img/Zabbix3.png)
+Добавляю хосты
+![screen](/img/Zabbix4.png)
+Настроенный Dashboard
+![screen](/img/Zabbix5.png)
+
+Доступ к Zabbix:
+Логин: Admin
+Пароль: zabbix
+
+✅ Zabbix Server и Zabbix Agentd установлены, настроены, дэшборд создан, доступ предоставлен.
+
+## Логи, настройка Elasticsearch в Kibana
+
+Захожу в Kibana http://51.250.9.153:5601
+![screen](/img/Kib1.png)
+Создаю Index patterns
+![screen](/img/Kib2.png)
+Логи отправляются
+![screen](/img/Kib3.png)
+
+✅ Elasticsearch, Kibana, Filebeat функционируют. Логи отправляются. Доступ предоставлен. 
+
+## Резервное копирование
+
+![screen](/img/bckp.png)
+![screen](/img/bckp1.png)
+
+✅ Резервное копирование настроено. Первый снимок сделан.
+
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+
+

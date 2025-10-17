@@ -1,0 +1,79 @@
+---
+- name: Install and configure Nginx on web servers (Diploma)
+  hosts: webservers
+  become: true
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure Nginx is started and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Deploy custom index.html for diploma
+      copy:
+        content: |
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Diploma Project</title>
+            <style>
+              body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                color: #2c3e50;
+              }
+              .container {
+                text-align: center;
+                background: white;
+                padding: 2.5rem;
+                border-radius: 12px;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+                max-width: 600px;
+                width: 90%;
+              }
+              h1 {
+                font-size: 2.2rem;
+                margin-bottom: 0.5rem;
+                color: #1a3a6c;
+              }
+              .subtitle {
+                font-size: 1.1rem;
+                color: #555;
+                margin-bottom: 1.5rem;
+              }
+              .host {
+                font-size: 0.9rem;
+                color: #7f8c8d;
+                margin-top: 1.2rem;
+                padding-top: 1rem;
+                border-top: 1px solid #eee;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>Rasputin E.V. — Diploma Project</h1>
+              <div class="subtitle">Fault-tolerant web infrastructure in Yandex Cloud</div>
+              <p>Monitoring: Zabbix | Logs: ELK Stack | Load Balancing: Yandex ALB</p>
+              <div class="host">Served by: {{ inventory_hostname }}</div>
+            </div>
+          </body>
+          </html>
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'

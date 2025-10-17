@@ -1,0 +1,38 @@
+---
+- name: Install Elasticsearch (Diploma)
+  hosts: elastic
+  become: yes
+  tasks:
+    - name: Install prerequisites
+      apt:
+        name: [curl, wget]
+        state: present
+
+    - name: Download and install Elasticsearch from Yandex mirror
+      apt:
+        deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/e/elasticsearch/elasticsearch-8.8.0-amd64.deb"
+
+    - name: Configure elasticsearch.yml
+      copy:
+        content: |
+          cluster.name: diplom-cluster
+          node.name: vm-elastic
+          path.data: /var/lib/elasticsearch
+          path.logs: /var/log/elasticsearch
+          network.host: 0.0.0.0
+          http.port: 9200
+          xpack.security.enabled: false
+          xpack.security.enrollment.enabled: false
+          xpack.security.http.ssl.enabled: false
+          xpack.security.transport.ssl.enabled: false
+          cluster.initial_master_nodes: ["vm-elastic.ru-central1.internal"]
+        dest: /etc/elasticsearch/elasticsearch.yml
+        owner: root
+        group: elasticsearch
+        mode: '0644'
+
+    - name: Start and enable Elasticsearch
+      systemd:
+        name: elasticsearch
+        state: started
+        enabled: yes

@@ -1,0 +1,40 @@
+---
+- name: Install and configure Filebeat on web servers (Diploma)
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Download and install Filebeat from Yandex mirror
+      apt:
+        deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/f/filebeat/filebeat-8.8.0-amd64.deb"
+        state: present
+
+    - name: Configure filebeat.yml
+      copy:
+        content: |
+          filebeat.inputs:
+            - type: filestream
+              enabled: true
+              paths:
+                - /var/log/nginx/access.log
+              tags: ["nginx-access"]
+
+            - type: filestream
+              enabled: true
+              paths:
+                - /var/log/nginx/error.log
+              tags: ["nginx-error"]
+
+          output.elasticsearch:
+            hosts: ["http://10.0.2.3:9200"]
+
+          # Отключаем попытки подключиться к Kibana (не обязательно для отправки логов)
+          setup.dashboards.enabled: false
+
+          processors:
+            - add_host_metadata: ~
+            - add_cloud_metadata: ~
+
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0644'

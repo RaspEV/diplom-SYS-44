@@ -1,0 +1,26 @@
+---
+- name: Install Kibana (Diploma)
+  hosts: kibana
+  become: yes
+  tasks:
+    - name: Download and install Kibana from Yandex mirror
+      apt:
+        deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/k/kibana/kibana-8.8.0-amd64.deb"
+
+    - name: Configure kibana.yml
+      copy:
+        content: |
+          server.name: "diplom-kibana"
+          server.port: 5601
+          server.host: "0.0.0.0"
+          elasticsearch.hosts: ["http://vm-elastic.ru-central1.internal:9200"]
+        dest: /etc/kibana/kibana.yml
+        owner: kibana    # ← ИЗМЕНЕНО: владелец — kibana
+        group: kibana
+        mode: '0640'
+
+    - name: Start and enable Kibana
+      systemd:
+        name: kibana
+        enabled: yes
+        state: started

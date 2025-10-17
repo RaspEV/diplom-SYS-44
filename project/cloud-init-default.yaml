@@ -1,0 +1,16 @@
+#cloud-config
+users:
+  - name: user
+    groups: sudo
+    shell: /bin/bash
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    ssh_authorized_keys:
+      - ssh-ed25519
+    lock_passwd: true
+
+timezone: Europe/Moscow
+locale: "en_US.UTF-8"
+
+runcmd:
+  - apt-get update
+  - apt-get install -y python3 python3-pip python3-psycopg2

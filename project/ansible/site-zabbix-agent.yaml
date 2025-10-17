@@ -1,0 +1,32 @@
+---
+- name: Install and configure Zabbix Agent on all hosts (Diploma)
+  hosts: all
+  become: true
+  tasks:
+    - name: Install Zabbix Agent
+      apt:
+        name: zabbix-agent
+        state: present
+        update_cache: yes
+
+    - name: Remove all existing Server/ServerActive lines
+      lineinfile:
+        path: /etc/zabbix/zabbix_agentd.conf
+        regexp: '^#?Server(Active)?='
+        state: absent
+
+    - name: Add clean Server and ServerActive
+      lineinfile:
+        path: /etc/zabbix/zabbix_agentd.conf
+        line: "{{ item }}"
+        state: present
+      loop:
+        - "Server=vm-zabbix.ru-central1.internal"
+        - "ServerActive=vm-zabbix.ru-central1.internal"
+        - "Hostname={{ inventory_hostname }}"
+
+    - name: Restart Zabbix agent
+      systemd:
+        name: zabbix-agent
+        state: restarted
+        enabled: yes
